@@ -1,7 +1,7 @@
 import os
-import aiohttp
 import discord
 from discord.ext import commands
+from aiohttp import web
 
 # Environment variables se token aur target channel id uthayenge
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -59,18 +59,18 @@ async def postmsg(ctx, message_link: str):
     await ctx.send(f"❌ Error: {str(e)}")
 
 
-# Render / UptimeRobot ke liye aiohttp web server (optional par safe hai)
+# Render / UptimeRobot ke liye web server
 async def handle(request):
-  return aiohttp.web.Response(text="Bot is running!")
+  return web.Response(text="Bot is running!")
 
 
 async def run_web():
-  app = aiohttp.web.Application()
+  app = web.Application()
   app.router.add_get("/", handle)
-  runner = aiohttp.web.AppRunner(app)
+  runner = web.AppRunner(app)
   await runner.setup()
   port = int(os.getenv("PORT", 10000))
-  site = aiohttp.web.TCPSite(runner, "0.0.0.0", port)
+  site = web.TCPSite(runner, "0.0.0.0", port)
   await site.start()
 
 
