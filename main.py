@@ -1,6 +1,7 @@
 import os
+import asyncio
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from aiohttp import web
 
 # Environment variables se token aur target channel id uthayenge
@@ -12,10 +13,34 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+# Jo link aap har 1 ghante mein bhejna chahte hain
+LINK_TO_SHARE = "https://discord.gg/H6KqzMCDP"
+
 
 @bot.event
 async def on_ready():
   print(f"✅ LOGGED IN AS {bot.user}")
+  # Background task ko start karna jab bot online ho jaye
+  if not auto_post_loop.is_running():
+    auto_post_loop.start()
+
+
+# Har 1 ghante (hours=1) mein chalne wala background task
+@tasks.loop(hours=1.0)
+async def auto_post_loop():
+  await bot.wait_until_ready()
+  try:
+    target_channel = bot.get_channel(TARGET_CHANNEL_ID)
+    if not target_channel:
+      target_channel = await bot.fetch_channel(TARGET_CHANNEL_ID)
+
+    if target_channel:
+      await target_channel.send(
+          f"📢 **Automatic Share:** {LINK_TO_SHARE}"
+      )
+      print("✅ Auto-posted link successfully!")
+  except Exception as e:
+    print(f"❌ Auto-post error: {str(e)}")
 
 
 @bot.command(name="postmsg")
@@ -30,28 +55,23 @@ async def postmsg(ctx, message_link: str):
     source_channel_id = int(parts[5])
     message_id = int(parts[6])
 
-    # Source channel se message fetch karna
     source_channel = bot.get_channel(source_channel_id)
     if not source_channel:
       source_channel = await bot.fetch_channel(source_channel_id)
 
     msg = await source_channel.fetch_message(message_id)
 
-    # Target channel find karna
     target_channel = bot.get_channel(TARGET_CHANNEL_ID)
     if not target_channel:
       target_channel = await bot.fetch_channel(TARGET_CHANNEL_ID)
 
-    # Content aur attachments prepare karna
     content_to_send = f"**Forwarded from {msg.author.mention}:**\n{msg.content}"
 
-    # Agar koi image/attachment hai toh unhe collect karna
     files = []
     for attachment in msg.attachments:
       file = await attachment.to_file()
       files.append(file)
 
-    # Target channel par bhej dena
     await target_channel.send(content=content_to_send, files=files)
     await ctx.send("✅ Message successfully posted to the target channel!")
 
@@ -72,9 +92,6 @@ async def run_web():
   port = int(os.getenv("PORT", 10000))
   site = web.TCPSite(runner, "0.0.0.0", port)
   await site.start()
-
-
-import asyncio
 
 
 async def main():
