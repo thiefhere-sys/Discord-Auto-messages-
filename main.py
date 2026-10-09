@@ -14,7 +14,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Jo link aap har 1 ghante mein bhejna chahte hain
-LINK_TO_SHARE = "https://discord.gg/H6KqzMCDP"
+LINK_TO_SHARE = "https://youtube.com/@mishorts1818?si=_KHPvSshfC16VcBM"
 
 
 @bot.event
