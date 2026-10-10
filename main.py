@@ -1,5 +1,6 @@
 import os
 import asyncio
+import random
 import discord
 from discord.ext import commands, tasks
 from aiohttp import web
@@ -13,14 +14,21 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# Jo link aap har 1 ghante mein bhejna chahte hain
-LINK_TO_SHARE = "https://youtube.com/@mishorts1818?si=_KHPvSshfC16VcBM"
+# Yahan aap jitne chahein utne messages ya links add kar sakte hain (4 se 6 ya zyada)
+LINKS_TO_SHARE = [
+    "https://discord.gg/H6KqzMCDP",
+    "https://youtube.com/@mishorts1818?si=_KHPvSshfC16VcBM",
+    "https://discord.gg/your_second_invite_here",
+    # Aap aur bhi links yahan double quotes mein comma laga kar jod sakte hain
+]
+
+# Index track karne ke liye variable taaki ek-ek karke link jaye
+current_link_index = 0
 
 
 @bot.event
 async def on_ready():
   print(f"✅ LOGGED IN AS {bot.user}")
-  # Background task ko start karna jab bot online ho jaye
   if not auto_post_loop.is_running():
     auto_post_loop.start()
 
@@ -28,17 +36,24 @@ async def on_ready():
 # Har 1 ghante (hours=1) mein chalne wala background task
 @tasks.loop(hours=1.0)
 async def auto_post_loop():
+  global current_link_index
   await bot.wait_until_ready()
   try:
     target_channel = bot.get_channel(TARGET_CHANNEL_ID)
     if not target_channel:
       target_channel = await bot.fetch_channel(TARGET_CHANNEL_ID)
 
-    if target_channel:
-      await target_channel.send(
-          f"📢 **Automatic Share:** {LINK_TO_SHARE}"
-      )
-      print("✅ Auto-posted link successfully!")
+    if target_channel and LINKS_TO_SHARE:
+      # List se current link uthana
+      link_to_send = LINKS_TO_SHARE[current_link_index]
+
+      # Bina kisi extra prefix ke seedha link bhejna
+      await target_channel.send(link_to_send)
+      print(f"✅ Auto-posted successfully: {link_to_send}")
+
+      # Agli baar agli link bhejne ke liye index ko aage badhana (loop around)
+      current_link_index = (current_link_index + 1) % len(LINKS_TO_SHARE)
+
   except Exception as e:
     print(f"❌ Auto-post error: {str(e)}")
 
@@ -46,7 +61,6 @@ async def auto_post_loop():
 @bot.command(name="postmsg")
 async def postmsg(ctx, message_link: str):
   try:
-    # Discord link format: https://discord.com/channels/guild_id/channel_id/message_id
     parts = message_link.split("/")
     if len(parts) < 7:
       await ctx.send("❌ Invalid message link format!")
@@ -79,7 +93,7 @@ async def postmsg(ctx, message_link: str):
     await ctx.send(f"❌ Error: {str(e)}")
 
 
-# Render / UptimeRobot ke liye web server
+# Render ke liye web server
 async def handle(request):
   return web.Response(text="Bot is running!")
 
