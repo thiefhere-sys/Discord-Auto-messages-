@@ -16,9 +16,9 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Yahan aap jitne chahein utne messages ya links add kar sakte hain (4 se 6 ya zyada)
 LINKS_TO_SHARE = [
-    "https://discord.gg/H6KqzMCDP",
+    "https://discord.gg/gfWF5D3gs",
     "https://youtube.com/@mishorts1818?si=_KHPvSshfC16VcBM",
-    "https://discord.gg/your_second_invite_here",
+    "https://discord.gg/H6KqzMCDP",
     # Aap aur bhi links yahan double quotes mein comma laga kar jod sakte hain
 ]
 
