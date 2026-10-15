@@ -18,7 +18,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 LINKS_TO_SHARE = [
     "https://discord.gg/H6KqzMCDP",
     "https://youtube.com/@mishorts1818?si=_KHPvSshfC16VcBM",
-    "https://discord.gg/your_second_invite_here",
+    "https://discord.gg/gfWF5D3gs",
     "Want to earn free gift cards and cash in your spare time? 💸 Join Swagbucks and get paid for taking surveys, watching videos, and shopping online! Sign up using my link and start earning today: https://www.swagbucks.com/refer/Irshad01",
     # Aap aur bhi links yahan double quotes mein comma laga kar jod sakte hain
 ]
