@@ -17,7 +17,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 # Yahan aap jitne chahein utne messages ya links add kar sakte hain (4 se 6 ya zyada)
 LINKS_TO_SHARE = [
     "https://discord.gg/ByS5WtsWT",
-    "https://youtube.com/@mishorts1818?si=_KHPvSshfC16VcBM",
+    "https://www.youtube.com/@IrshadCentral",
     "https://discord.gg/gfWF5D3gs",
     "https://www.facebook.com/share/1Dicxe9VC6/",
     "Want to earn free gift cards and cash in your spare time? 💸 Join Swagbucks and get paid for taking surveys, watching videos, and shopping online! Sign up using my link and start earning today: https://www.swagbucks.com/refer/Irshad01",
